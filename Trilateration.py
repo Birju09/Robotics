@@ -50,7 +50,7 @@ def trilaterate3D(distances):
     Att = dot((A.T),A)
     X =  dot(dot(linalg.inv(Att),A.T),b)                     ##X = (A^TA)^-1A^Tb
     
-    return [X[0][0],X[1][0],X[2][0],1] 
+    return [X[0][0],X[1][0],X[2][0]]
 
 if __name__ == "__main__":
 
