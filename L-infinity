@@ -1,0 +1,88 @@
+##This code calculates the quality of the random sampling created in a map of dimension 1x1 by calculating L-infinity dispersion.
+## The parameter k in the main program is the number of samples to be generated
+## The comments on the plot part can be removed to see the plot
+## Written by : Birju Vachhani
+
+#import matplotlib.pyplot as plt
+import random
+#import time
+import math
+def randomlist(k):
+    rlistx = []
+    rlisty = []
+    for i in range(k):
+        rlistx.append(random.random())
+        rlisty.append(random.random())
+    return rlistx,rlisty
+
+def inside(x1,x2,y1,y2,rlistx,rlisty):
+    a = 0
+    for point in zip(rlistx,rlisty):
+        if point[0] > (min(x1,x2)) and point[0] < max(x1,x2) and point[1] > min(y1,y2) and point[1] < max(y1,y2):
+            a +=1
+        else:
+            a +=0
+    return a
+
+    
+if __name__ == '__main__':
+    k = 20
+   
+##    start = time.time()
+    [rlistx,rlisty] = randomlist(k)
+    
+    a = 1
+    lenlist = []
+    lenx = len(rlistx)
+    combinations = (math.factorial(lenx)/(2 * math.factorial(lenx-2)))
+    while a <= (lenx-2):        
+        for i in range(lenx):
+            points = [rlistx[i%lenx],rlistx[(i+a)%lenx]]
+            x1 = min(points)
+            x2 = max(points)
+            y1 = rlisty[rlistx.index(x1)]
+            y2 = rlisty[rlistx.index(x2)]
+            l = [x2-x1,y2-y1]
+            if abs(l[0]) > abs(l[1]):            
+                y2 = max(min(y1 + l[0],1),0)
+                
+            elif abs(l[1]) > abs(l[0]):
+                x2 = max(min(x1 + abs(l[1]),1),0)
+                y2 = max(min(y1 + l[1],1),0)
+            
+            check = inside(x1,x2,y1,y2,rlistx,rlisty)
+            if check == 0:                
+                #plt.plot([x1,x2,x2,x1,x1],[y1,y1,y2,y2,y1])
+                le = (abs(x2-x1) * abs(y2-y1))            
+                lenlist.append(math.pow(le,0.5))
+        a +=1
+    a = 1
+    while a <= (lenx-2):        
+        for i in range(lenx):
+            points = [rlisty[i%lenx],rlisty[(i+a)%lenx]]
+            y1 = min(points)
+            y2 = max(points)
+            x1 = rlisty[rlisty.index(y1)]
+            x2 = rlisty[rlisty.index(y2)]
+            l = [x2-x1,y2-y1]
+            if abs(l[0]) > abs(l[1]):            
+                y2 = max(min(y1 + abs(l[0]),1),0)
+                x2 = max(min(x1 + l[0],1),0)
+            elif abs(l[1]) > abs(l[0]):
+                x2 = max(min(x1 + l[1],1),0)
+
+            
+            check = inside(x1,x2,y1,y2,rlistx,rlisty)
+            if check == 0:                
+                #plt.plot([x1,x2,x2,x1,x1],[y1,y1,y2,y2,y1])
+                le = (abs(x2-x1) * abs(y2-y1))            
+                lenlist.append(math.pow(le,0.5))
+        a +=1
+   
+##    plt.plot(rlistx,rlisty,'b*')
+##    plt.show()
+##    plt.xlim(0,1)
+##    plt.ylim(0,1)
+##    plt.close()
+    print max(lenlist)
+##    print (time.time() - start)
